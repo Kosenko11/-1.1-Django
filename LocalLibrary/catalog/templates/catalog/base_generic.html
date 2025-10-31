@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+  {% load static %}
+<title>LocalLibrary</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+<header>
+  <h1><a href="{% 'catalog:index.html' %}" class="logo">LocalLibrary</a></h1>
+  <nav>
+    <a href="{% 'catalog:book_list.html' %}">Книги</a>
+    <a href="{% 'catalog:author_list.html' %}">Авторы</a>
+    <a href="{% 'catalog:profile.html %}">Личный кабинет</a>
+  </nav>
+</header>
+<footer>
+  LocalLibrary © 2024
+</footer>
+</body>
+</html>

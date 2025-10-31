@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Список книг</h1>
+
+<ul>
+    {% for book in books %}
+        <li>
+            <a href="{% url 'catalog:book-detail' book.id %}">
+                {{ book.title }} ({{ book.author }})
+            </a>
+        </li>
+    {% empty %}
+        <li>Книги не найдены.</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{% url 'catalog:index' %}">На главную</a></p>
+{% endblock %}

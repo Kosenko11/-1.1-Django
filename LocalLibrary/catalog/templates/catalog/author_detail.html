@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+{% load static %}
+<h1>{{ author.first_name }} {{ author.last_name }}</h1>
+
+<p><strong>Дата рождения:</strong> {{ author.date_of_birth }}</p>
+<p><strong>Дата смерти:</strong> {{ author.date_of_death }}</p>
+
+<h2>Книги автора</h2>
+<ul>
+    {% for book in author.book_set.all %}
+        <li><a href="{% url 'catalog:book-detail' book.id %}">{{ book.title }}</a></li>
+    {% empty %}
+        <li>У автора нет книг.</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{% url 'catalog:author-list' %}">К списку авторов</a></p>
+<p><a href="{% url 'catalog:index' %}">На главную</a></p>
+{% endblock %}
