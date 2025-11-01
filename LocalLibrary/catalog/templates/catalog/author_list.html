@@ -1,20 +1,21 @@
-{% extends "base_generic.html" %}
+{% extends "catalog/base_generic.html" %}
 
 {% block content %}
 <h1>Список авторов</h1>
-
+{% if author_list %}
 <ul>
     {% for author in authors %}
         <li>
-            <a href="{% url 'catalog:author-detail' author.id %}">
-                {{ author.first_name }} {{ author.last_name }}
+            <a href="{{ author.get_absolute_url }}">
+                {{ author }} ({{author.date_of_birth}} - {% if author.date_of_death %}{{author.date_of_death}}{% endif %})
             </a>
         </li>
-    {% empty %}
-        <li>Авторы не найдены.</li>
     {% endfor %}
 </ul>
+{% else %}
+  <p>Авторы не найдены</p>
+{% endif %}
 
-<p><a href="{% url 'catalog:index' %}">На главную</a></p>
+
 {% endblock %}
 

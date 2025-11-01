@@ -15,7 +15,7 @@ def index(request):
         'num_authors': num_authors,
     }
 
-    return render(request, 'catalog:index.html', context=context)
+    return render(request, 'catalog/index.html')
 
 class BookListView(generic.ListView):
     model = Book
@@ -24,6 +24,7 @@ class BookListView(generic.ListView):
 
 class BookDetailView(generic.DetailView):
     model = Book
+    template_name = 'catalog/book_detail.html'
 
 class AuthorListView(generic.ListView):
     model = Author
@@ -32,3 +33,4 @@ class AuthorListView(generic.ListView):
 
 class AuthorDetailView(generic.DetailView):
     model = Author
+    template_name = 'catalog/author_detail.html'

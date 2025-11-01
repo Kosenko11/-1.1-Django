@@ -1,9 +1,9 @@
-{% extends "base_generic.html" %}
+{% extends "catalog/base_generic.html" %}
 
 {% block content %}
 
 {% load static %}
-<h1>{{ author.first_name }} {{ author.last_name }}</h1>
+<h1>Автор: {{ author.first_name }} {{ author.last_name }}</h1>
 
 <p><strong>Дата рождения:</strong> {{ author.date_of_birth }}</p>
 <p><strong>Дата смерти:</strong> {{ author.date_of_death }}</p>

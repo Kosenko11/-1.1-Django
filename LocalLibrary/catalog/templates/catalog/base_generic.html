@@ -8,15 +8,16 @@
 </head>
 <body>
 <header>
-  <h1><a href="{% 'catalog:index.html' %}" class="logo">LocalLibrary</a></h1>
+  <h1><a href="{% url 'index' %}" class="logo">LocalLibrary</a></h1>
   <nav>
-    <a href="{% 'catalog:book_list.html' %}">Книги</a>
-    <a href="{% 'catalog:author_list.html' %}">Авторы</a>
-    <a href="{% 'catalog:profile.html %}">Личный кабинет</a>
+    {% block sidebar %}
+    <a href="{% url 'books' %}">Книги</a>
+    <a href="{% url 'authors' %}">Авторы</a>
   </nav>
 </header>
 <footer>
   LocalLibrary © 2024
 </footer>
+{% endblock %}
 </body>
 </html>

@@ -1,4 +1,4 @@
-{% extends "base_generic.html" %}
+{% extends "catalog/base_generic.html" %}
 
 {% block content %}
 <h1>Список книг</h1>
@@ -6,7 +6,7 @@
 <ul>
     {% for book in books %}
         <li>
-            <a href="{% url 'catalog:book-detail' book.id %}">
+            <a href="{{ book.get_absolute_url }}">
                 {{ book.title }} ({{ book.author }})
             </a>
         </li>
@@ -15,5 +15,4 @@
     {% endfor %}
 </ul>
 
-<p><a href="{% url 'catalog:index' %}">На главную</a></p>
 {% endblock %}
