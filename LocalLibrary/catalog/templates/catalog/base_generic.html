@@ -5,10 +5,17 @@
   {% load static %}
 <title>LocalLibrary</title>
 <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <style>
+         nav a { margin-left: -12px; padding: 10px; }
+        .sidebar-nav a { color: white; text-decoration: none; margin-left: -10px; font-size: 16px; padding: 10px; }
+        .sidebar-nav p { color: white; text-decoration: none; font-size: 16px; }
+    </style>
 </head>
 <body>
 <header>
   <h1><a href="{% url 'index' %}" class="logo">LocalLibrary</a></h1>
+
+  <div class="col-sm-2">
 
   <nav>
     {% block sidebar %}
@@ -19,11 +26,69 @@
     <a href="{% url 'languages' %}">Языки</a>
   </nav>
 
+  <div class="sidebar-nav">
+   {% if user.is_authenticated %}
+     <p>Пользователь: {{ user.get_username }}</p>
+     <a href="{% url 'my-borrowed' %}">Мои прокаты</a>
+       <form id="logout-form" method="post" action="{% url 'logout' %}">
+         {% csrf_token %}
+         <button type="submit" class="btn btn-link">Выход</button>
+       </form>
+   {% else %}
+     <a href="{% url 'login'%}?next={{request.path}}">Вход</a>
+   {% endif %}
+  </div>
+
+   {% if user.is_staff %}
+   <hr>
+   <div class="sidebar-nav">
+   <p>Редактирование:</p>
+   <a href="{% url 'all-borrowed' %}">Все прокаты</a>
+   {% if perms.catalog.add_genre %}
+     <a href="{% url 'genre-create' %}">Добавить жанр</a>
+   {% endif %}
+   {% if perms.catalog.add_language %}
+     <a href="{% url 'language-create' %}">Добавить язык</a>
+   {% endif %}
+   {% if perms.catalog.add_author %}
+     <a href="{% url 'author-create' %}">Добавить автора</a>
+   {% endif %}
+   {% if perms.catalog.add_book %}
+     <a href="{% url 'book-create' %}">Добавить книгу</a>
+   {% endif %}
+   {% if perms.catalog.add_bookinstance %}
+     <a href="{% url 'bookinstance-create' %}">Добавить экземпляр книги</a>
+   {% endif %}
+   </div>
+   {% endif %}
+
+  </div>
+  <div class="col-sm-10 ">
+
+  {% block pagination %}
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">предыдущий</a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">следующий</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+  {% endblock %}
+  </div>
+
 </header>
 <main>
     {% block content %}
     {% endblock %}
-  </main>
+</main>
 
 <footer>
   LocalLibrary © 2024

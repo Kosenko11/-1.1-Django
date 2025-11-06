@@ -49,15 +49,6 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   
-  .book img {
-    float: left;
-    margin-right: 15px;
-    width: 100px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 3px;
-  }
-  
   .book div {
     overflow: hidden;
   }
@@ -85,3 +76,11 @@ body {
     margin-top: 40px;
     font-size: 14px;
   }
+
+#logout-form {
+  display: inline;
+}
+#logout-form button {
+  padding: 0;
+  margin: 0;
+}
