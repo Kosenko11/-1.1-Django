@@ -9,12 +9,22 @@
 <body>
 <header>
   <h1><a href="{% url 'index' %}" class="logo">LocalLibrary</a></h1>
+
   <nav>
     {% block sidebar %}
     <a href="{% url 'books' %}">Книги</a>
+    <a href="{% url 'bookinstances' %}">Экземпляры книг</a></li>
     <a href="{% url 'authors' %}">Авторы</a>
+    <a href="{% url 'genres' %}">Жанры</a>
+    <a href="{% url 'languages' %}">Языки</a>
   </nav>
+
 </header>
+<main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
 <footer>
   LocalLibrary © 2024
 </footer>

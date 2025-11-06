@@ -1,18 +1,20 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-<h1>Список книг</h1>
+    <h1>Список книг:</h1>
 
-<ul>
-    {% for book in books %}
-        <li>
-            <a href="{{ book.get_absolute_url }}">
-                {{ book.title }} ({{ book.author }})
-            </a>
-        </li>
-    {% empty %}
-        <li>Книги не найдены.</li>
-    {% endfor %}
-</ul>
+    {% if book_list %}
+    <ul>
 
+      {% for book in book_list %}
+      <li>
+        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}})
+      </li>
+      {% endfor %}
+
+    </ul>
+
+    {% else %}
+      <p>Нет книг.</p>
+    {% endif %}
 {% endblock %}

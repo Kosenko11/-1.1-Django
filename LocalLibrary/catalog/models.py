@@ -1,19 +1,51 @@
 from django.db import models
 from django.urls import reverse
+from django.db.models import UniqueConstraint
+from django.db.models.functions import Lower
 from django.contrib.auth.models import User
 import uuid
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200, help_text="Введите жанр книги")
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Введите жанр книги"
+    )
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('genre-detail', args=[str(self.id)])
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower('name'),
+                name='genre_name_case_insensitive_unique',
+                violation_error_message = "Жанр уже существует"
+            ),
+        ]
 
 class Language(models.Model):
-    name = models.CharField(max_length=200, help_text="Введите язык книги")
+    name = models.CharField(max_length=200,
+                            unique=True,
+                            help_text="Введите язык книги")
+
+    def get_absolute_url(self):
+        return reverse('language-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower('name'),
+                name='language_name_case_insensitive_unique',
+                violation_error_message = "Язык уже существует"
+            ),
+        ]
 
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
@@ -39,11 +71,24 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre, help_text="Выберите жанр книги")
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
 
-    def __str__(self):
-        return self.title
+    class Meta:
+        ordering = ['title', 'author']
+
+    def display_genre(self):
+        return ', '.join([genre.name for genre in self.genre.all()[:3]])
+
+    display_genre.short_description = 'Genre'
 
     def get_absolute_url(self):
         return reverse('book-detail', args=[str(self.id)])
+
+    def __str__(self):
+        return self.title
+
+import uuid
+from datetime import date
+
+from django.conf import settings
 
 class BookInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,
@@ -51,25 +96,34 @@ class BookInstance(models.Model):
     book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True)
     imprint = models.CharField(max_length=200)
     due_back = models.DateField(null=True, blank=True)
-    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    borrower = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+
+    @property
+    def is_overdue(self):
+        return bool(self.due_back and date.today() > self.due_back)
 
     LOAN_STATUS = (
-        ('m', 'Техническое обслуживание'),
+        ('d', 'Техническое обслуживание'),
         ('o', 'В наличии'),
-        ('r', 'Зарезервирована'),
-        ('b', 'Выдана'),
+        ('a', 'Зарезервирована'),
+        ('r', 'Выдана'),
     )
 
     status = models.CharField(
         max_length=1,
         choices=LOAN_STATUS,
         blank=True,
-        default='m',
+        default='d',
         help_text='Статус книги',
     )
 
     class Meta:
         ordering = ['due_back']
+        permissions = (("can_mark_returned", "Set book as returned"),)
+
+    def get_absolute_url(self):
+        return reverse('bookinstance-detail', args=[str(self.id)])
 
     def __str__(self):
         return f'{self.id} ({self.book.title})'

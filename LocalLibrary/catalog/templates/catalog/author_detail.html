@@ -2,21 +2,37 @@
 
 {% block content %}
 
-{% load static %}
-<h1>Автор: {{ author.first_name }} {{ author.last_name }}</h1>
+<h1>Автор: {{ author }} </h1>
+<p>{{author.date_of_birth}} - {% if author.date_of_death %}{{author.date_of_death}}{% endif %}</p>
 
-<p><strong>Дата рождения:</strong> {{ author.date_of_birth }}</p>
-<p><strong>Дата смерти:</strong> {{ author.date_of_death }}</p>
+<div style="margin-left:20px;margin-top:20px">
+<h4>Книги</h4>
 
-<h2>Книги автора</h2>
-<ul>
-    {% for book in author.book_set.all %}
-        <li><a href="{% url 'catalog:book-detail' book.id %}">{{ book.title }}</a></li>
-    {% empty %}
-        <li>У автора нет книг.</li>
-    {% endfor %}
-</ul>
+<dl>
+{% for book in author.book_set.all %}
+  <dt><a href="{% url 'book-detail' book.pk %}">{{book}}</a> ({{book.bookinstance_set.all.count}})</dt>
+  <dd>{{book.summary}}</dd>
+  {% empty %}
+  <p>У этого автора нет книг</p>
+{% endfor %}
+</dl>
 
-<p><a href="{% url 'catalog:author-list' %}">К списку авторов</a></p>
-<p><a href="{% url 'catalog:index' %}">На главную</a></p>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+  {{ block.super }}
+
+  {% if perms.catalog.change_author or perms.catalog.delete_author %}
+  <hr>
+  <ul class="sidebar-nav">
+    {% if perms.catalog.change_author %}
+      <li><a href="{% url 'author-update' author.id %}">Обновить автора</a></li>
+    {% endif %}
+    {% if not author.book_set.all and perms.catalog.delete_author %}
+      <li><a href="{% url 'author-delete' author.id %}">Удалить автора</a></li>
+    {% endif %}
+    </ul>
+  {% endif %}
+
 {% endblock %}
